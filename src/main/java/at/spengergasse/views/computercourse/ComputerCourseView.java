@@ -11,7 +11,7 @@ import com.vaadin.flow.router.Route;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Computer Course")
-@Route("")
+@Route("home")
 @Menu(order = 0, icon = LineAwesomeIconUrl.HOME_SOLID)
 public class ComputerCourseView extends HorizontalLayout {
 

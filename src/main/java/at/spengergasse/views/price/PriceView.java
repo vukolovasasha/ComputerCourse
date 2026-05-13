@@ -10,8 +10,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
-@PageTitle("price")
-@Route("empty")
+@PageTitle("Price")
+@Route("price")
 @Menu(order = 2, icon = LineAwesomeIconUrl.DOLLAR_SIGN_SOLID)
 public class PriceView extends VerticalLayout {
 

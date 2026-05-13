@@ -10,8 +10,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
-@PageTitle("lessons")
-@Route("about")
+@PageTitle("Lessons")
+@Route("lessons")
 @Menu(order = 1, icon = LineAwesomeIconUrl.GRADUATION_CAP_SOLID)
 public class LessonsView extends VerticalLayout {
 
