@@ -7,23 +7,17 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
-@PageTitle("Computer Course")
+@PageTitle("Home")
 @Route("home")
 @Menu(order = 0, icon = LineAwesomeIconUrl.HOME_SOLID)
 public class ComputerCourseView extends VerticalLayout {
 
     public ComputerCourseView() {
         setSpacing(false);
-    H1 companyName = new H1("Vibe Сoding");
-        companyName.getStyle()
-                .set("font-family", "cursive")
-                .set("font-size", "4rem")
-                .set("margin", "0");
 
-    H2 subName = new H2("... We’ll teach you how to vibe code ...");
-        subName.getStyle()
-                .set("margin", "0")
-                .set("color", "gray");
+        setAlignItems(Alignment.CENTER);
+
+    VerticalLayout header = getHeader();
 
     Image img = new Image("images/logo.png", "Vibe Coding logo");
         img.setWidth("220px");
@@ -44,7 +38,30 @@ public class ComputerCourseView extends VerticalLayout {
     H3 street = new H3("Spengergasse 20");
     H3 city = new H3("1050 Wien");
 
-    add(companyName, subName, img, description, name, street, city);
+    add(header, img, description, name, street, city);
 
 }
+
+
+    public static VerticalLayout getHeader(){
+
+        VerticalLayout header;
+        header = new VerticalLayout();
+
+        H1 companyName = new H1("Vibe Сoding");
+        companyName.getStyle()
+                .set("font-family", "cursive")
+                .set("font-size", "4rem")
+                .set("margin", "0");
+
+        H2 subName = new H2("... We’ll teach you how to vibe code ...");
+        subName.getStyle()
+                .set("margin", "0")
+                .set("color", "gray");
+
+        header.add(companyName,subName);
+
+        return header;
+
+    }
     }
