@@ -64,4 +64,22 @@ public class ComputerCourseService {
                 .map(course -> course.toString())
                 .collect(Collectors.joining("\n"));
     }
+
+    public void removeAllLessons() {
+        courses.clear();
+    }
+
+    public void add10Lessons() {
+        courses.add(new Course(LocalDate.of(2026, 1, 10), "Git & GitHub", "Beginner", 3, 79.0, false));
+        courses.add(new Course(LocalDate.of(2026, 1, 15), "HTML & CSS Basics", "Beginner", 5, 149.0, false));
+        courses.add(new Course(LocalDate.of(2026, 1, 20), "Java Fundamentals", "Beginner", 8, 199.0, true));
+        courses.add(new Course(LocalDate.of(2026, 2, 5), "Java OOP", "Intermediate", 10, 299.0, true));
+        courses.add(new Course(LocalDate.of(2026, 2, 10), "PostgreSQL", "Intermediate", 8, 249.0, true));
+        courses.add(new Course(LocalDate.of(2026, 2, 15), "Frontend Development", "Intermediate", 12, 349.0, true));
+        courses.add(new Course(LocalDate.of(2026, 3, 1), "Spring Boot", "Advanced", 15, 499.0, true));
+        courses.add(new Course(LocalDate.of(2026, 3, 5), "Docker & Containers", "Advanced", 8, 399.0, true));
+        courses.add(new Course(LocalDate.of(2026, 3, 10), "DevOps Fundamentals", "Advanced", 12, 599.0, true));
+        courses.add(new Course(LocalDate.of(2026, 3, 15), "Clean Architecture", "Advanced", 10, 699.0, true));
+
+    }
 }
