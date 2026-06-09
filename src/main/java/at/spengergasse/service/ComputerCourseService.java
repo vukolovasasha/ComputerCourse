@@ -48,6 +48,16 @@ public class ComputerCourseService {
         courses.add(new Course(LocalDate.of(2026, 6, 20), "Cloud Computing", "Advanced", 15, 999.0, true));
     }
 
+
+    public ArrayList <Course>  findAll() {
+        ArrayList<Course> clone;
+
+        clone = new ArrayList<>(courses);
+
+        return clone;
+    }
+
+
     @Override
     public String toString() {
         return courses.stream()

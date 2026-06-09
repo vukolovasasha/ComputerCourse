@@ -25,12 +25,7 @@ public class Course {
     private Boolean certificate;
 
     public Course(){
-        setStartDate(LocalDate.now());
-        setCourseName("Git & GitHub");
-        setCourseLevel("Beginner");
-        setLessons(3);
-        setPrice(79.0);
-        setCertificate(false);
+
     }
 
     public Course(LocalDate startDate, String courseName, String courseLevel, Integer lessons, Double price, Boolean certificate) {
