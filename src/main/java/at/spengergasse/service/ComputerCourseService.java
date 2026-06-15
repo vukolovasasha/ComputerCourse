@@ -82,4 +82,10 @@ public class ComputerCourseService {
         courses.add(new Course(LocalDate.of(2026, 3, 15), "Clean Architecture", "Advanced", 10, 699.0, true));
 
     }
+
+    public void add10Euro() {
+        for(Course c : courses){
+            c.setPrice(c.getPrice()+10);
+        }
+    }
 }
