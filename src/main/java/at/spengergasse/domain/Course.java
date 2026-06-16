@@ -1,9 +1,11 @@
 package at.spengergasse.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -17,11 +19,23 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Course {
     @Id
     private Long      courseId;
+    @NotNull (message =  "Course date is required!")
+    @PastOrPresent (message = "Course can be only in past or present")
     private LocalDate startDate;
+    @NotBlank(message = "Course name is required!")
+    @Size(min = 3, max = 100 ,message = "name must be from 3 to 100 character")
     private String    courseName;
+    @NotNull (message = "Course level is required!")
+    @Pattern(regexp = "Beginner|Intermediate|Advanced", message = "Beginner,Intermediate, Advanced")
     private String    courseLevel;
+    @NotNull (message = "Number of lessons is required!")
+    @Min(value = 1,message = "min 1 lesson")
     private Integer   lessons;
+    @NotNull (message = "Course price is required!")
+    @DecimalMin(value = "50.0", message = "min 50 euro")
+    @DecimalMax(value = "2000.0", message = "max 2000 euro")
     private Double    price;
+    @NotNull (message = "Information about certificate is required!")
     private Boolean certificate;
 
     public Course(){
@@ -47,6 +61,7 @@ public class Course {
         setPrice(price);
         setCertificate(certificate);
     }
+    /*
     private static final String[] levels = {"Beginner", "Intermediate", "Advanced"
     };
 
@@ -58,6 +73,8 @@ public class Course {
         this.courseLevel = courseLevel;
     }
 
+
+
     public void setPrice(Double price) {
 
         if (price < 50)
@@ -68,6 +85,8 @@ public class Course {
 
         this.price = price;
     }
+
+     */
 
     @Override
     public Course clone (){
