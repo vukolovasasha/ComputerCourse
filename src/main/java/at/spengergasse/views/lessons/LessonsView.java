@@ -105,9 +105,48 @@ public class LessonsView extends VerticalLayout {
                 .setSortable(true);
 
 
+        grid.addComponentColumn(course ->{
+                    Button delete = new Button("Delete");
+                    delete.addClickListener(e -> remove1Lesson(course.getCourseId()));
+                    return delete;
+                })
+                        .setHeader("Delete course")
+                                .setSortable(false);
+
+        grid.addComponentColumn(course -> {
+            Button add1Lesson = new Button("Add 1 lesson");
+            add1Lesson.addClickListener(e -> add1Lesson(course.getCourseId()));
+            return  add1Lesson;
+        })
+                        .setHeader("Add 1 lesson")
+                                .setSortable(false);
+
+
         add(grid);
         expand(grid);
         reload();
+    }
+
+    private void add1Lesson(Long courseId) {
+        try {
+            computerCourseService.add1Lesson(courseId);
+            reload();
+        }
+        catch (CourseException e){
+            Notification.show(e.getMessage());
+        }
+    }
+
+    private void remove1Lesson(Long courseId) {
+        try {
+            computerCourseService.remove1Lesson(courseId);
+            reload();
+
+        }
+        catch (CourseException e){
+            Notification.show(e.getMessage());
+            reload();
+        }
     }
 
     private void buttonAdd10Euro() {

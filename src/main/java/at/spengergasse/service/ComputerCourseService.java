@@ -1,6 +1,7 @@
 package at.spengergasse.service;
 
 import at.spengergasse.domain.Course;
+import at.spengergasse.domain.CourseException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +17,8 @@ public class ComputerCourseService {
         courses = new ArrayList<>(1000);
         FillTestData();
     }
+
+
 
 
     public void FillTestData() {
@@ -86,6 +89,23 @@ public class ComputerCourseService {
     public void add10Euro() {
         for(Course c : courses){
             c.setPrice(c.getPrice()+10);
+        }
+    }
+
+    public  void remove1Lesson(Long courseId) {
+        if( courseId == null)
+            throw new CourseException("Course ID does not exist!");
+        if( courses.removeIf(c -> c.getCourseId().equals(courseId)) == false)
+            throw  new CourseException("Course ID does not exist!");
+
+    }
+
+    public void add1Lesson(Long courseId) {
+        if( courseId == null)
+            throw new CourseException("Course ID does not exist!");
+        for (Course c : courses){
+            if (c.getCourseId().equals(courseId))
+                c.setLessons(c.getLessons() +1);
         }
     }
 }
