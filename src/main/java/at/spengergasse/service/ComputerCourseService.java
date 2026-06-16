@@ -108,4 +108,11 @@ public class ComputerCourseService {
                 c.setLessons(c.getLessons() +1);
         }
     }
+
+    public void addNewCourse(Course course) {
+        if(course == null){
+            throw new CourseException("Error");
+        }
+        courses.add(course);
+    }
 }

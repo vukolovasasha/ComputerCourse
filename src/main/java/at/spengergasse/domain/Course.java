@@ -38,8 +38,17 @@ public class Course {
     @NotNull (message = "Information about certificate is required!")
     private Boolean certificate;
 
-    public Course(){
+    public Course() {
+        setCourseId();
+        setStartDate(LocalDate.now());
 
+        setCourseName("Java Fundamentals");
+        setCourseLevel("Beginner");
+
+        setLessons(8);
+        setPrice(199.0);
+
+        setCertificate(true);
     }
 
     public Course(LocalDate startDate, String courseName, String courseLevel, Integer lessons, Double price, Boolean certificate) {
@@ -61,6 +70,8 @@ public class Course {
         setPrice(price);
         setCertificate(certificate);
     }
+
+
     /*
     private static final String[] levels = {"Beginner", "Intermediate", "Advanced"
     };

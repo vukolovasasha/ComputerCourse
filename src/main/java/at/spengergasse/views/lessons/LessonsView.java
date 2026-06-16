@@ -6,6 +6,8 @@ import at.spengergasse.service.ComputerCourseService;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -13,14 +15,20 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.textfield.TextField;
 
 import java.time.LocalDate;
 
@@ -33,6 +41,7 @@ public class LessonsView extends VerticalLayout {
     private final Button buttonRemoveAllLessons = new Button("Remove all");
     private final Button buttonAdd10Lessons = new Button("Add 10 lessons");
     private final Button buttonAdd10Euro = new Button("+10 Euro");
+    private final Button buttonAddCourse = new Button("Add new Course");
     private final Grid<Course> grid = new Grid<>(Course.class,false);
     private final ComputerCourseService computerCourseService;
 
@@ -55,8 +64,9 @@ public class LessonsView extends VerticalLayout {
         buttonRemoveAllLessons.addClickListener((ClickEvent<Button>event) -> removeAllLessons());
         buttonAdd10Lessons.addClickListener((ClickEvent<Button>event) -> add10Lessons());
         buttonAdd10Euro.addClickListener((ClickEvent<Button>event)-> buttonAdd10Euro());
+        buttonAddCourse.addClickListener(buttonClickEvent -> buttonAddCourse());
 
-        add(new HorizontalLayout(buttonRemoveAllLessons, buttonAdd10Lessons, buttonAdd10Euro));
+        add(new HorizontalLayout(buttonRemoveAllLessons, buttonAdd10Lessons, buttonAdd10Euro, buttonAddCourse));
 
 
 
@@ -125,6 +135,84 @@ public class LessonsView extends VerticalLayout {
         add(grid);
         expand(grid);
         reload();
+    }
+
+    private void buttonAddCourse() {
+        Dialog dialog;
+        dialog = new Dialog();
+        dialog.setHeaderTitle("Add new Course");
+
+        TextField courseId = new TextField("Course ID");
+        DatePicker startDate = new DatePicker("Course start date");
+        TextField courseName = new TextField("Course name");
+        ComboBox courseLevel = new ComboBox("Course Level");
+        courseLevel.setItems("Beginner", "Intermediate", "Advanced");
+        NumberField price = new NumberField("Price");
+        IntegerField lessons = new IntegerField("Number of lessons");
+        Checkbox certificate = new Checkbox("Certificate");
+
+        BeanValidationBinder<Course> binder = new BeanValidationBinder<>(Course.class);
+
+        binder.forField(startDate)
+                .bind("startDate");
+        binder.forField(courseName)
+                .bind("courseName");
+        binder.forField(courseLevel)
+                .bind("courseLevel");
+        binder.forField(price)
+                .bind("price");
+        binder.forField(lessons)
+                .bind("lessons");
+        binder.forField(certificate)
+                .bind("certificate");
+
+        Course course = new Course();
+        binder.setBean(course);
+
+        courseId.setValue(""+course.getCourseId());
+        courseId.setReadOnly(true);
+
+        VerticalLayout formLayout = new VerticalLayout(
+                courseId,startDate,courseName,courseLevel,price,lessons,certificate
+        );
+
+        Button buttonOK = new Button("OK");
+        Button buttonCansel = new Button("Cancel");
+
+        buttonOK.addClickListener(buttonClickEvent -> {
+            try {
+                if(binder.validate().isOk()){
+                    computerCourseService.addNewCourse(course);
+                    dialog.close();
+                    reload();
+                    Notification.show("New course added");
+
+            }
+                else
+                    Notification.show("Check your input!");
+            }
+            catch (CourseException e){
+                Notification.show(e.getMessage());
+            }
+        });
+
+        buttonCansel.addClickListener(buttonClickEvent -> {
+            dialog.close();
+        });
+
+        dialog.add(formLayout);
+        HorizontalLayout buttons = new HorizontalLayout(
+                buttonOK,
+                buttonCansel
+        );
+
+        buttons.setWidthFull();
+        buttons.setJustifyContentMode(
+                JustifyContentMode.CENTER
+        );
+
+        dialog.getFooter().add(buttons);
+        dialog.open();
     }
 
     private void add1Lesson(Long courseId) {
