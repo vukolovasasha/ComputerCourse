@@ -1,5 +1,7 @@
 package at.spengergasse.domain;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
@@ -18,41 +20,37 @@ import java.util.concurrent.atomic.AtomicLong;
 @Entity
 public class Course {
     @Id
-    private Long      courseId;
-    @NotNull (message =  "Course date is required!")
-    @PastOrPresent (message = "Course can be only in past or present")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long courseId;
+    @NotNull(message = "Course date is required!")
+    @PastOrPresent(message = "Course can be only in past or present")
     private LocalDate startDate;
     @NotBlank(message = "Course name is required!")
-    @Size(min = 3, max = 100 ,message = "name must be from 3 to 100 character")
-    private String    courseName;
-    @NotNull (message = "Course level is required!")
+    @Size(min = 3, max = 100, message = "name must be from 3 to 100 character")
+    private String courseName;
+    @NotNull(message = "Course level is required!")
     @Pattern(regexp = "Beginner|Intermediate|Advanced", message = "Beginner,Intermediate, Advanced")
-    private String    courseLevel;
-    @NotNull (message = "Number of lessons is required!")
-    @Min(value = 1,message = "min 1 lesson")
-    private Integer   lessons;
-    @NotNull (message = "Course price is required!")
+    private String courseLevel;
+    @NotNull(message = "Number of lessons is required!")
+    @Min(value = 1, message = "min 1 lesson")
+    private Integer lessons;
+    @NotNull(message = "Course price is required!")
     @DecimalMin(value = "50.0", message = "min 50 euro")
     @DecimalMax(value = "2000.0", message = "max 2000 euro")
-    private Double    price;
-    @NotNull (message = "Information about certificate is required!")
+    private Double price;
+    @NotNull(message = "Information about certificate is required!")
     private Boolean certificate;
 
     public Course() {
-        setCourseId();
         setStartDate(LocalDate.now());
-
         setCourseName("Java Fundamentals");
         setCourseLevel("Beginner");
-
         setLessons(8);
         setPrice(199.0);
-
         setCertificate(true);
     }
 
     public Course(LocalDate startDate, String courseName, String courseLevel, Integer lessons, Double price, Boolean certificate) {
-        setCourseId();
         setStartDate(startDate);
         setCourseName(courseName);
         setCourseLevel(courseLevel);
@@ -100,15 +98,13 @@ public class Course {
      */
 
     @Override
-    public Course clone (){
-        return new Course(courseId,startDate,courseName,courseLevel,lessons,price,certificate);
-    }
-
-    private static final AtomicLong sequence = new AtomicLong(10000);
-
-
-    public void setCourseId(){
-        courseId = sequence.getAndIncrement();
+    public Course clone() {
+        return new Course(courseId, startDate, courseName, courseLevel, lessons, price, certificate);
     }
 }
+
+
+
+
+
 

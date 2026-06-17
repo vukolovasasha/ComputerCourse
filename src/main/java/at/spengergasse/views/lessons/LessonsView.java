@@ -18,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -39,9 +40,9 @@ import static com.vaadin.copilot.shaded.io.netty.handler.codec.http.HttpHeaders.
 @Menu(order = 1, icon = LineAwesomeIconUrl.GRADUATION_CAP_SOLID)
 public class LessonsView extends VerticalLayout {
     private final Button buttonRemoveAllLessons = new Button("Remove all");
-    private final Button buttonAdd10Lessons = new Button("Add 10 lessons");
+    private final Button buttonAdd10Lessons = new Button("Add 10 courses");
     private final Button buttonAdd10Euro = new Button("+10 Euro");
-    private final Button buttonAddCourse = new Button("Add new Course");
+    private final Button buttonAddCourse = new Button("Add new course");
     private final Grid<Course> grid = new Grid<>(Course.class,false);
     private final ComputerCourseService computerCourseService;
 
@@ -63,8 +64,8 @@ public class LessonsView extends VerticalLayout {
 
         buttonRemoveAllLessons.addClickListener((ClickEvent<Button>event) -> removeAllLessons());
         buttonAdd10Lessons.addClickListener((ClickEvent<Button>event) -> add10Lessons());
-        buttonAdd10Euro.addClickListener((ClickEvent<Button>event)-> buttonAdd10Euro());
-        buttonAddCourse.addClickListener(buttonClickEvent -> buttonAddCourse());
+        buttonAdd10Euro.addClickListener((ClickEvent<Button>event)-> add10Euro());
+        buttonAddCourse.addClickListener(buttonClickEvent -> addEditCourse(null));
 
         add(new HorizontalLayout(buttonRemoveAllLessons, buttonAdd10Lessons, buttonAdd10Euro, buttonAddCourse));
 
@@ -101,9 +102,7 @@ public class LessonsView extends VerticalLayout {
                 .setAutoWidth(true)
                 .setSortable(true);
 
-        grid.addColumn(course -> course.getCertificate()  ? "Yes" : "Nope")
-                .setHeader("Certificate")
-                .setSortable(true);
+
 
         grid.addComponentColumn(course -> {
             Checkbox certificate =  new Checkbox(course.getCertificate());
@@ -130,6 +129,13 @@ public class LessonsView extends VerticalLayout {
         })
                         .setHeader("Add 1 lesson")
                                 .setSortable(false);
+        grid.addComponentColumn(course -> {
+            Button editCourse = new Button("Edit");
+            editCourse.addClickListener(e -> addEditCourse(course));
+            return editCourse;
+        })
+                        .setHeader("Action")
+                                .setSortable(false);
 
 
         add(grid);
@@ -137,10 +143,18 @@ public class LessonsView extends VerticalLayout {
         reload();
     }
 
-    private void buttonAddCourse() {
+    private void addEditCourse(Course existingCourse) {
         Dialog dialog;
         dialog = new Dialog();
-        dialog.setHeaderTitle("Add new Course");
+        Course course;
+        if (existingCourse ==null) {
+            dialog.setHeaderTitle("Add new Course");
+            course = new Course();
+        }
+        else {
+            dialog.setHeaderTitle("Edit Course");
+            course = existingCourse;
+        }
 
         TextField courseId = new TextField("Course ID");
         DatePicker startDate = new DatePicker("Course start date");
@@ -166,7 +180,7 @@ public class LessonsView extends VerticalLayout {
         binder.forField(certificate)
                 .bind("certificate");
 
-        Course course = new Course();
+
         binder.setBean(course);
 
         courseId.setValue(""+course.getCourseId());
@@ -181,17 +195,27 @@ public class LessonsView extends VerticalLayout {
 
         buttonOK.addClickListener(buttonClickEvent -> {
             try {
-                if(binder.validate().isOk()){
-                    computerCourseService.addNewCourse(course);
+                if (binder.validate().isOk()) {
+                    binder.writeBean(course);
+
+                    if (existingCourse == null) {
+                        computerCourseService.addNewCourse(course);
+                        Notification.show("New course added");
+                    } else {
+                        computerCourseService.editCourse(course);
+                        Notification.show("Course modified");
+                    }
+
                     dialog.close();
                     reload();
-                    Notification.show("New course added");
-
-            }
-                else
+                } else {
                     Notification.show("Check your input!");
+                }
             }
-            catch (CourseException e){
+            catch (CourseException e) {
+                Notification.show(e.getMessage());
+            }
+            catch (ValidationException e) {
                 Notification.show(e.getMessage());
             }
         });
@@ -237,7 +261,7 @@ public class LessonsView extends VerticalLayout {
         }
     }
 
-    private void buttonAdd10Euro() {
+    private void add10Euro() {
         try {
             computerCourseService.add10Euro();
             reload();
