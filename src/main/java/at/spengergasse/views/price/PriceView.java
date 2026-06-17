@@ -4,7 +4,6 @@ import at.spengergasse.views.computercourse.ComputerCourseView;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -17,18 +16,37 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 public class PriceView extends VerticalLayout {
 
     public PriceView() {
-        setSpacing(true);
-        setPadding(true);
+        setWidthFull();
+        setMinHeight("100vh");
+
+        setSpacing(false);
+        setPadding(false);
         setAlignItems(Alignment.CENTER);
+
+        getStyle()
+                .set("background", "#f5f7fb")
+                .set("font-family", "Arial, sans-serif");
+
+        getElement().executeJs(
+                "document.documentElement.style.background='#f5f7fb';" +
+                        "document.body.style.background='#f5f7fb';"
+        );
 
         VerticalLayout header = ComputerCourseView.getHeader();
 
         H2 priceList = new H2("Price List");
         priceList.getStyle()
-                .set("margin", "0")
-                .set("color", "gray");
+                .set("margin", "20px 0 30px 0")
+                .set("color", "#777");
 
         FlexLayout courses = new FlexLayout();
+        courses.setWidthFull();
+        courses.setJustifyContentMode(JustifyContentMode.CENTER);
+        courses.setFlexWrap(FlexLayout.FlexWrap.WRAP);
+
+        courses.getStyle()
+                .set("gap", "24px")
+                .set("max-width", "1350px");
 
         VerticalLayout beginner = getCard(
                 "Beginner Viber",
@@ -51,40 +69,40 @@ public class PriceView extends VerticalLayout {
                 "Clean Architecture", 1000
         );
 
-        courses.setWidthFull();
-        courses.setJustifyContentMode(
-                JustifyContentMode.CENTER);
+        VerticalLayout cowboy = getCard(
+                "AI Cowboy",
+                "Prompt Engineering", 199,
+                "AI Agents", 399,
+                "LLM Integration", 599
+        );
 
-        courses.setFlexWrap(
-                FlexLayout.FlexWrap.WRAP);
+        VerticalLayout extra = getCard(
+                "Additional Services",
+                "Certificate", 29,
+                "1:1 Mentoring / hour", 49,
+                "Project Review", 69
+        );
 
-        courses.getStyle()
-                .set("gap", "20px");
+        courses.add(beginner, explorer, survivor,cowboy, extra);
 
-        courses.add(beginner, explorer, survivor);
+        VerticalLayout pageCard = new VerticalLayout();
+        pageCard.setAlignItems(Alignment.CENTER);
+        pageCard.setPadding(true);
+        pageCard.setSpacing(false);
+        pageCard.setWidth("90%");
+        pageCard.setMaxWidth("1450px");
 
-        VerticalLayout extra = new VerticalLayout();
+        pageCard.getStyle()
+                .set("background", "white")
+                .set("margin-top", "50px")
+                .set("margin-bottom", "50px")
+                .set("padding", "40px")
+                .set("border-radius", "20px")
+                .set("box-shadow", "0 8px 25px rgba(0,0,0,0.12)");
 
-        H2 extras = new H2("Additional Services");
-        Paragraph cert = new Paragraph("Certificate +29 €");
-        Paragraph mentor = new Paragraph("1:1 Mentoring 49 €/hour");
+        pageCard.add(header, priceList, courses);
 
-        extra.add(extras, cert, mentor);
-
-        extra.setWidth("300px");
-        extra.setPadding(true);
-        extra.setSpacing(false);
-        extra.setAlignItems(Alignment.START);
-
-        extra.getStyle()
-                .set("border", "1px solid #ddd")
-                .set("border-radius", "12px")
-                .set("box-shadow", "0 2px 8px rgba(0,0,0,0.08)")
-                .set("background-color", "white");
-
-        extras.getStyle().set("margin-top", "0");
-
-        add(header, priceList, courses, extra);
+        add(pageCard);
     }
 
     public VerticalLayout getCard(String courseName,
@@ -100,19 +118,27 @@ public class PriceView extends VerticalLayout {
         Paragraph p2 = new Paragraph(course2 + " - " + price2 + " €");
         Paragraph p3 = new Paragraph(course3 + " - " + price3 + " €");
 
-
-        card.setWidth("300px");
+        card.setWidth("280px");
+        card.setMinHeight("230px");
         card.setPadding(true);
         card.setSpacing(false);
         card.setAlignItems(Alignment.START);
 
         card.getStyle()
                 .set("border", "1px solid #ddd")
-                .set("border-radius", "12px")
-                .set("box-shadow", "0 2px 8px rgba(0,0,0,0.08)")
-                .set("background-color", "white");
+                .set("border-radius", "16px")
+                .set("box-shadow", "0 4px 12px rgba(0,0,0,0.08)")
+                .set("background-color", "#ffffff")
+                .set("padding", "24px");
 
-        title.getStyle().set("margin-top", "0");
+        title.getStyle()
+                .set("margin-top", "0")
+                .set("margin-bottom", "18px")
+                .set("color", "#1f2937");
+
+        p1.getStyle().set("margin", "6px 0");
+        p2.getStyle().set("margin", "6px 0");
+        p3.getStyle().set("margin", "6px 0");
 
         card.add(title, p1, p2, p3);
 

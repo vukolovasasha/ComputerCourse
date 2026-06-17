@@ -51,16 +51,12 @@ public class LessonsView extends VerticalLayout {
 
         setSpacing(true);
         setSizeFull();
-        grid.setSizeFull();
 
-        setSpacing(true);
-        setSizeFull();
-
-        grid.setSizeFull();
         grid.setWidthFull();
+        grid.setHeight("600px");
 
         grid.getStyle()
-                .set("--vaadin-grid-cell-white-space", "normal");
+                .set("--vaadin-grid-cell-white-space", "nowrap");
 
         buttonRemoveAllLessons.addClickListener((ClickEvent<Button>event) -> removeAllLessons());
         buttonAdd10Lessons.addClickListener((ClickEvent<Button>event) -> add10Lessons());
@@ -72,12 +68,15 @@ public class LessonsView extends VerticalLayout {
 
 
         grid.addColumn(course -> course.getCourseId())
-                        .setHeader("Course ID")
-                                .setSortable(true);
+                .setHeader("ID")
+                .setAutoWidth(true)
+                .setFlexGrow(0)
+                .setSortable(true);
 
         grid.addColumn(course -> course.getStartDate())
-                .setHeader("Course Date")
+                .setHeader("Date")
                 .setAutoWidth(true)
+                .setFlexGrow(0)
                 .setSortable(true);
 
         Image l = new Image("images/logo.png", "Company logo");
@@ -85,23 +84,27 @@ public class LessonsView extends VerticalLayout {
         HorizontalLayout headerType = new HorizontalLayout(l, new Span("Name"));
         grid.addColumn(course -> course.getCourseName())
                 .setHeader(headerType)
-                .setWidth("200px")
-                .setFlexGrow(1)
+                .setAutoWidth(true)
+                .setFlexGrow(0)
                 .setSortable(true);
 
         grid.addColumn(course -> course.getCourseLevel())
                 .setHeader("Level")
+                .setAutoWidth(true)
+                .setFlexGrow(0)
                 .setSortable(true);
 
         grid.addColumn(course -> course.getLessons())
-                .setHeader("Lesson")
+                .setHeader("Lessons")
+                .setAutoWidth(true)
+                .setFlexGrow(0)
                 .setSortable(true);
 
         grid.addColumn(course -> course.getPrice())
-                .setHeader("Course Price")
+                .setHeader("Price")
                 .setAutoWidth(true)
+                .setFlexGrow(0)
                 .setSortable(true);
-
 
 
         grid.addComponentColumn(course -> {
@@ -111,6 +114,8 @@ public class LessonsView extends VerticalLayout {
 
         })
                 .setHeader("Certificate")
+                .setAutoWidth(true)
+                .setFlexGrow(0)
                 .setSortable(true);
 
 
@@ -119,23 +124,27 @@ public class LessonsView extends VerticalLayout {
                     delete.addClickListener(e -> remove1Lesson(course.getCourseId()));
                     return delete;
                 })
-                        .setHeader("Delete course")
-                                .setSortable(false);
+                .setHeader("Delete")
+                .setAutoWidth(true)
+                .setFlexGrow(0);
 
         grid.addComponentColumn(course -> {
-            Button add1Lesson = new Button("Add 1 lesson");
+            Button add1Lesson = new Button("+ 1");
             add1Lesson.addClickListener(e -> add1Lesson(course.getCourseId()));
             return  add1Lesson;
         })
-                        .setHeader("Add 1 lesson")
-                                .setSortable(false);
+                .setHeader("Lesson")
+                .setAutoWidth(true)
+                .setFlexGrow(0);
+
         grid.addComponentColumn(course -> {
             Button editCourse = new Button("Edit");
             editCourse.addClickListener(e -> addEditCourse(course));
             return editCourse;
         })
-                        .setHeader("Action")
-                                .setSortable(false);
+                .setHeader("Edit")
+                .setAutoWidth(true)
+                .setFlexGrow(0);
 
 
         add(grid);
@@ -195,28 +204,25 @@ public class LessonsView extends VerticalLayout {
 
         buttonOK.addClickListener(buttonClickEvent -> {
             try {
-                if (binder.validate().isOk()) {
+                if(binder.validate().isOk()){
                     binder.writeBean(course);
-
-                    if (existingCourse == null) {
+                    if(existingCourse == null)
                         computerCourseService.addNewCourse(course);
-                        Notification.show("New course added");
-                    } else {
-                        computerCourseService.editCourse(course);
-                        Notification.show("Course modified");
-                    }
-
                     dialog.close();
                     reload();
-                } else {
+                    if(existingCourse == null)
+                        Notification.show("New course added");
+                    else
+                        computerCourseService.editCourse(course);
+                    Notification.show("course modified");
+            }
+                else
                     Notification.show("Check your input!");
-                }
             }
-            catch (CourseException e) {
+            catch (CourseException e){
                 Notification.show(e.getMessage());
-            }
-            catch (ValidationException e) {
-                Notification.show(e.getMessage());
+            } catch (ValidationException e) {
+                throw new RuntimeException(e);
             }
         });
 

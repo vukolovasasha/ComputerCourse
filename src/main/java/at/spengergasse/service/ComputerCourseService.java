@@ -111,7 +111,7 @@ public class ComputerCourseService {
             if (c.getCourseId().equals(courseId))
                 c.setLessons(c.getLessons() +1);
             repository.save(c);
-            return;
+
         }
     }
 
